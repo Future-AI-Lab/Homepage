@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -13,12 +14,12 @@
   </header>
 
   <nav>
-    <a href="#about" data-section="about">关于我们</a>
-    <a href="#research" data-section="research">研究方向</a>
-    <a href="#team" data-section="team">团队成员</a>
-    <a href="#projects" data-section="projects">研究项目</a>
-    <a href="#publications" data-section="publications">论文成果</a>
-    <a href="#contact" data-section="contact">联系我们</a>
+    <a href="#about" onclick="loadContent('about')">关于我们</a>
+    <a href="#research" onclick="loadContent('research')">研究方向</a>
+    <a href="#team" onclick="loadContent('team')">团队成员</a>
+    <a href="#projects" onclick="loadContent('projects')">研究项目</a>
+    <a href="#publications" onclick="loadContent('publications')">论文成果</a>
+    <a href="#contact" onclick="loadContent('contact')">联系我们</a>
   </nav>
 
   <main id="content">
@@ -32,41 +33,17 @@
   <script>
     function loadContent(section) {
       fetch(section + '.html')
-        .then(response => {
-          if (!response.ok) throw new Error('加载失败: ' + section);
-          return response.text();
-        })
+        .then(response => response.text())
         .then(html => {
           document.getElementById('content').innerHTML = html;
-        })
-        .catch(err => {
-          document.getElementById('content').innerHTML = '<p style="color:red;">无法加载内容，请检查网络或文件路径。</p>';
-          console.error(err);
         });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // 点击导航时拦截默认跳转，改为加载内容
-      document.querySelectorAll('nav a').forEach(link => {
-        link.addEventListener('click', function (event) {
-          event.preventDefault();
-          const section = this.getAttribute('data-section');
-          if (section) {
-            loadContent(section);
-            history.replaceState(null, '', '#' + section);
-          }
-        });
-      });
-
-      // 页面加载时，根据 hash 加载相应模块
-      const hash = window.location.hash.slice(1);
-      if (hash) {
-        loadContent(hash);
-      } else {
-        loadContent('about');
-      }
-    });
+    // 默认加载“关于我们”
+    window.onload = () => loadContent('about');
   </script>
 </body>
 </html>
+
+
 
