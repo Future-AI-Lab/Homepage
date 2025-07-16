@@ -23,6 +23,7 @@
 
   <main id="content">
     <!-- 动态内容将被加载到这里 -->
+    <p>正在加载内容，请稍候...</p>
   </main>
 
   <footer>
@@ -30,41 +31,55 @@
   </footer>
 
   <script>
+    /**
+     * 加载指定模块的 HTML 内容
+     * @param {string} section 文件名，不带扩展名
+     */
     function loadContent(section) {
-      fetch(section + '.html')
+      const file = `${section}.html`;
+      fetch(file)
         .then(response => {
-          if (!response.ok) throw new Error('加载失败: ' + section);
+          if (!response.ok) {
+            throw new Error(`文件 ${file} 加载失败`);
+          }
           return response.text();
         })
         .then(html => {
           document.getElementById('content').innerHTML = html;
         })
-        .catch(err => {
-          document.getElementById('content').innerHTML = '<p style="color:red;">无法加载内容，请检查网络或文件路径。</p>';
-          console.error(err);
+        .catch(error => {
+          document.getElementById('content').innerHTML = `<p style="color:red;">无法加载内容：${error.message}</p>`;
+          console.error(error);
         });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // 点击导航时拦截默认跳转，改为加载内容
-      document.querySelectorAll('nav a').forEach(link => {
-        link.addEventListener('click', function (event) {
-          event.preventDefault();
-          const section = this.getAttribute('data-section');
+    /**
+     * 绑定导航点击事件
+     */
+    function setupNavigation() {
+      const links = document.querySelectorAll('nav a');
+      links.forEach(link => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault(); // 阻止锚点跳转
+          const section = link.getAttribute('data-section');
           if (section) {
             loadContent(section);
-            history.replaceState(null, '', '#' + section);
+            history.replaceState(null, '', `#${section}`);
           }
         });
       });
+    }
 
-      // 页面加载时，根据 hash 加载相应模块
-      const hash = window.location.hash.slice(1);
-      if (hash) {
-        loadContent(hash);
-      } else {
-        loadContent('about');
-      }
+    /**
+     * 页面加载完成后执行
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      setupNavigation();
+
+      // 根据 URL hash 自动加载对应内容
+      const defaultSection = 'about';
+      const hash = window.location.hash.replace('#', '') || defaultSection;
+      loadContent(hash);
     });
   </script>
 </body>
