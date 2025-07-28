@@ -117,3 +117,19 @@ ul {
 .team-card.other {
   background-color: #f3f8fc;
 }
+
+#publications h3 {
+  color: #0b1e3c;
+  font-size: 1.2em;
+  margin-top: 30px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
+
+.paper {
+  margin-bottom: 15px;
+  padding-left: 10px;
+  border-left: 3px solid #00d9ff;
+  font-size: 0.95em;
+  line-height: 1.6;
+}
